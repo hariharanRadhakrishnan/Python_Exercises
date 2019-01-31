@@ -1,0 +1,353 @@
+nfvo:nfvo nsd Transit_SingleDC
+ designer              "Cisco AS"
+ version               1.2
+ vnfd CSR_A
+  connection-point downstream
+   virtual-link        FW_CSR_Internal
+   ip-sequence         1
+   physical-interface  enp133s0f0
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        3
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        CSR_Peer
+   ip-sequence         0
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  connection-point upstream
+   virtual-link        FW_CSR
+   ip-sequence         1
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_B
+  connection-point downstream
+   virtual-link        FW_CSR_Internal
+   ip-sequence         2
+   physical-interface  enp133s0f1
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        3
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        CSR_Peer
+   ip-sequence         1
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  ! !
+  connection-point upstream
+   virtual-link        FW_CSR
+   ip-sequence         2
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Secondary
+ !
+ service-access-point FW_CSR_Internal
+  description    "Connection between ASR A and SW A"
+  layer-protocol IPv4
+  virtual-link   FW_CSR_Internal
+ !
+ virtual-link ASR_A_SW_A
+  description    "Connection between ASR A and SW B - Crossing"
+  layer-protocol IPv4
+  cidr           31
+  pool-name      external
+  need-vlan      true
+  need-contract  false
+  need-epg       false
+  need-vip       false
+  need-vrf       false
+ !
+ virtual-link ASR_A_SW_B
+  description    "Connection between ASR A and SW B - Crossing"
+  layer-protocol IPv4
+  cidr           31
+  pool-name      external
+  need-vlan      true
+  need-contract  false
+  need-epg       false
+  need-vip       false
+  need-vrf       false
+ !
+ virtual-link CSR_Peer
+  description    "Connection between the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           31
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       true
+  need-vip       false
+  need-vrf       false
+  is-vnf-network false
+ !
+ virtual-link FW_CSR
+  description        "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol     IPv4
+  cidr               29
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           true
+  vip-sequence       5
+  need-vrf           true
+  cross-dc           false
+  is-vnf-network     true
+ !
+ virtual-link FW_CSR_Internal
+  description        "Connection between the internal FW context to the internal CSR vitual devices"
+  layer-protocol     IPv4
+  cidr               29
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           true
+  vip-sequence       5
+  need-vrf           true
+  is-vnf-network     true
+ !
+ virtual-link FW_Internal_Management
+  description    "Management network for lower layer ASA firewall"
+  layer-protocol IPv4
+  cidr           23
+  pool-name      mgmt_fw_lower
+  need-vlan      false
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   510
+  need-vrf       false
+  reserve-per-ip true
+  fixed-vlan     18
+ !
+ virtual-link FW_Management
+  description    "Management network for upper layer ASA firewall"
+  layer-protocol IPv4
+  cidr           23
+  pool-name      mgmt_fw_upper
+  need-vlan      false
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   510
+  need-vrf       false
+  reserve-per-ip true
+  fixed-vlan     18
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           24
+  pool-name      management
+  need-vlan      false
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   254
+  need-vrf       false
+  reserve-per-ip true
+  fixed-vlan     20
+ !
+ virtual-link SW_FW
+  description    "Connection between the external switch with the upper FW context"
+  layer-protocol IPv4
+  cidr           29
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   5
+  need-vrf       true
+ !
+ virtual-link SW_FW_Internal
+  description    "Connection between the internal switch with the upper FW context"
+  layer-protocol IPv4
+  cidr           29
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   5
+  need-vrf       true
+ !
+ dc-mode               Single
+ skip-day1-vnfr-config false
+ nfd ASR_A
+  device-alias PRD-E-ASR-002
+  interfaces 0
+   role         south
+   if-type      TenGigabitEthernet
+   name         0/1/0
+   ip-sequence  0
+   network-name ASR_A_SW_A
+  !
+  interfaces 1
+   role         crossing
+   if-type      TenGigabitEthernet
+   name         0/1/1
+   ip-sequence  0
+   network-name ASR_A_SW_B
+  !
+ !
+ nfd FW
+  device-alias   PRD-O-FW-EXTRANET-001
+  add-new-device true
+  device-type    ASA_Context
+  interfaces 0
+   role                 mgmt
+   need-standby-address true
+   standby-ip-sequence  -1
+   if-type              Ethernet
+   name                 1/7
+   ip-sequence          -1
+   network-name         FW_Management
+  !
+  interfaces 1
+   role                 south
+   need-standby-address true
+   standby-ip-sequence  4
+   if-type              PortChannel
+   name                 1
+   ip-sequence          3
+   network-name         FW_CSR
+  !
+  interfaces 3
+   role                 north
+   need-standby-address true
+   standby-ip-sequence  4
+   if-type              PortChannel
+   name                 2
+   ip-sequence          3
+   network-name         SW_FW
+  !
+ !
+ nfd FW_Internal
+  device-alias   PRD-I-FW-EXTRANET-001
+  add-new-device true
+  function-code  eci
+  device-type    ASA_Context
+  interfaces 0
+   role                 mgmt
+   need-standby-address true
+   standby-ip-sequence  -1
+   if-type              Ethernet
+   name                 1/7
+   ip-sequence          -1
+   network-name         FW_Internal_Management
+  !
+  interfaces 1
+   role                 north
+   need-standby-address true
+   standby-ip-sequence  4
+   if-type              PortChannel
+   name                 2
+   ip-sequence          3
+   network-name         FW_CSR_Internal
+  !
+  interfaces 3
+   role                 south
+   need-standby-address true
+   standby-ip-sequence  4
+   if-type              PortChannel
+   name                 1
+   ip-sequence          3
+   network-name         SW_FW_Internal
+  !
+ !
+ nfd SW_A
+  device-alias PRD-E-SW-001
+  interfaces 0
+   role         north
+   if-type      Ethernet
+   name         1/1
+   ip-sequence  1
+   network-name ASR_A_SW_A
+  !
+  interfaces 1
+   role         south
+   if-type      SVI
+   name         1/3/1/1
+   ip-sequence  1
+   network-name SW_FW
+  !
+ !
+ nfd SW_A_Internal
+  device-alias PRD-C-SW-001
+  interfaces 0
+   role         north
+   if-type      SVI
+   name         1/3/1/1
+   ip-sequence  1
+   network-name SW_FW_Internal
+  !
+ !
+ nfd SW_B
+  device-alias PRD-E-SW-101
+  interfaces 0
+   role         crossing
+   if-type      Ethernet
+   name         1/1
+   ip-sequence  1
+   network-name ASR_A_SW_B
+  !
+  interfaces 1
+   role         south
+   if-type      SVI
+   name         1/3/1/1
+   ip-sequence  2
+   network-name SW_FW
+  !
+ !
+ nfd SW_B_Internal
+  device-alias PRD-C-SW-101
+  interfaces 0
+   role         north
+   if-type      SVI
+   name         1/3/1/1
+   ip-sequence  2
+   network-name SW_FW_Internal
+  !
+ !
+!

@@ -1,0 +1,298 @@
+nfvo:nfvo nsd ALL_CSR_DualDC
+ designer              Test
+ version               1.0
+ vnfd CSR_A
+  connection-point downstream
+   virtual-link        CSR_WAF
+   ip-sequence         1
+   physical-interface  enp133s0f0
+   need-dedicated-vlan false
+   network-epg         primary
+   vnic-type           SRIOV
+   interface-id        3
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        CSR_Peer
+   ip-sequence         0
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  connection-point upstream
+   virtual-link        FW_CSR
+   ip-sequence         1
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_B
+  connection-point downstream
+   virtual-link        CSR_WAF
+   ip-sequence         2
+   physical-interface  enp133s0f1
+   need-dedicated-vlan false
+   network-epg         primary
+   vnic-type           SRIOV
+   interface-id        3
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        CSR_Peer
+   ip-sequence         1
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  connection-point upstream
+   virtual-link        FW_CSR
+   ip-sequence         2
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd LB_A
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point upstream
+   virtual-link        WAF_LB_A
+   ip-sequence         2
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd LB_B
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point upstream
+   virtual-link        WAF_LB_B
+   ip-sequence         2
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd WAF_A
+  connection-point downstream
+   virtual-link        WAF_LB_A
+   ip-sequence         1
+   physical-interface  enp133s0f0
+   need-dedicated-vlan false
+   network-epg         primary
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        WAF_Peer
+   ip-sequence         1
+   physical-interface  enp133s0f0
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        4
+  !
+  connection-point upstream
+   virtual-link        CSR_WAF
+   ip-sequence         3
+   physical-interface  enp3s0f0
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd WAF_B
+  connection-point downstream
+   virtual-link        WAF_LB_B
+   ip-sequence         1
+   physical-interface  enp133s0f1
+   need-dedicated-vlan false
+   network-epg         primary
+   vnic-type           SRIOV
+   interface-id        2
+  !
+  connection-point mgmt
+   virtual-link        Management
+   ip-sequence         -1
+   physical-interface  po_vnf_mgmt
+   need-dedicated-vlan false
+   vnic-type           access
+   interface-id        0
+  !
+  connection-point peer
+   virtual-link        WAF_Peer
+   ip-sequence         2
+   physical-interface  enp133s0f1
+   need-dedicated-vlan false
+   vnic-type           SRIOV
+   interface-id        4
+  !
+  connection-point upstream
+   virtual-link        CSR_WAF
+   ip-sequence         4
+   physical-interface  enp3s0f1
+   need-dedicated-vlan false
+   network-epg         secondary
+   vnic-type           SRIOV
+   interface-id        1
+  !
+  security-zone External
+  role          Secondary
+ !
+ service-access-point ext
+  description    "Connection between ASR A and SW B - South"
+  layer-protocol IPv4
+  virtual-link   Management
+ !
+ virtual-link CSR_Peer
+  description    "Connection between the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       true
+  need-vip       false
+  need-vrf       false
+  is-vnf-network true
+ !
+ virtual-link CSR_WAF
+  description        "Connection between the upper layer CSR with WAF"
+  layer-protocol     IPv4
+  cidr               29
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           true
+  vip-sequence       5
+  need-vrf           true
+  is-vnf-network     true
+ !
+ virtual-link FW_CSR
+  description        "Connection between the external FW context to the upper layer CSR vitual devices in EXTRANET"
+  layer-protocol     IPv4
+  cidr               29
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           true
+  vip-sequence       5
+  need-vrf           true
+  cross-dc           false
+  is-vnf-network     true
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           24
+  pool-name      management
+  need-vlan      false
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   254
+  need-vrf       false
+  reserve-per-ip true
+  fixed-vlan     20
+ !
+ virtual-link WAF_LB_A
+  description        "Connection between WAF and AVI Load Balance for Side A"
+  layer-protocol     IPv4
+  cidr               30
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           false
+  need-vrf           false
+  is-vnf-network     true
+ !
+ virtual-link WAF_LB_B
+  description        "Connection between WAF and AVI Load Balance for Side B"
+  layer-protocol     IPv4
+  cidr               30
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg true
+  need-vip           false
+  need-vrf           false
+  is-vnf-network     true
+ !
+ virtual-link WAF_Peer
+  description        "Connection between WAF A and WAF B"
+  layer-protocol     IPv4
+  cidr               30
+  pool-name          internal
+  need-vlan          true
+  need-contract      true
+  need-epg           true
+  need-secondary-epg false
+  need-vip           false
+  need-vrf           false
+  is-vnf-network     true
+ !
+ dc-mode               Single
+ skip-day1-vnfr-config false
+!

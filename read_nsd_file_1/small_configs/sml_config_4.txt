@@ -1,0 +1,125 @@
+nfvo:nfvo nsd AWS_SingleDC
+ designer "Cisco AS"
+ version  0.1
+ vnfd CSR_A
+  connection-point downstream
+   virtual-link VPN_CSR
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  connection-point upstream
+   virtual-link FW_CSR
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_B
+  connection-point downstream
+   virtual-link VPN_CSR
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  connection-point upstream
+   virtual-link FW_CSR
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd CSR_IA
+  connection-point downstream
+   virtual-link FW_CSR_Internal
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer_Internal
+  !
+  connection-point upstream
+   virtual-link VPN_CSR_Internal
+  !
+  security-zone Internal
+  role          Primary
+ !
+ vnfd CSR_IB
+  connection-point downstream
+   virtual-link FW_CSR_Internal
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer_Internal
+  !
+  connection-point upstream
+   virtual-link VPN_CSR_Internal
+  !
+  security-zone Internal
+  role          Secondary
+ !
+ service-access-point FW_CSR_Internal
+  description    "Connection between ASR A and SW A"
+  layer-protocol IPv4
+  virtual-link   FW_CSR_Internal
+ !
+ virtual-link ASR_A_SW_A
+  description    "Connection between ASR A and SW A"
+  layer-protocol IPv4
+ !
+ virtual-link ASR_A_SW_B
+  description    "Connection between ASR A and SW B - Crossing"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_Peer
+  description    "Connection between the upper layer CSR virtual devices"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_Peer_Internal
+  description    "Connection between the upper layer CSR virtual devices"
+  layer-protocol IPv4
+ !
+ virtual-link FW_CSR
+  description    "Connection between the external FW context to the upper layer CSR virtual devices"
+  layer-protocol IPv4
+ !
+ virtual-link FW_CSR_Internal
+  description    "Connection between the internal FW context to the internal CSR virtual devices"
+  layer-protocol IPv4
+ !
+ virtual-link FW_Internal_Management
+  description    "Management network for lower layer ASA firewall"
+  layer-protocol IPv4
+ !
+ virtual-link FW_Management
+  description    "Management network for upper layer ASA firewall"
+  layer-protocol IPv4
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR virtual devices"
+  layer-protocol IPv4
+ !
+ virtual-link SW_FW
+  description    "Connection between the external switch with the upper FW context"
+  layer-protocol IPv4
+ !
+ virtual-link SW_FW_Internal
+  description    "Connection between the internal switch with the upper FW context"
+  layer-protocol IPv4
+ !
+ virtual-link VPN_CSR
+  description    "Connection between the CSR Upper layer and VPN for side A"
+  layer-protocol IPv4
+ !
+ virtual-link VPN_CSR_Internal
+  description    "Connection between the CSR Lower layer and VPN Side A"
+  layer-protocol IPv4
+ !
+!

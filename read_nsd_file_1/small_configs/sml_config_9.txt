@@ -1,0 +1,82 @@
+nfvo:nfvo nsd EWS_SSL_SingleDC
+ designer              "Cisco AS Team"
+ version               1.0
+ vnfd CSR_A
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_B
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd LB_A
+  connection-point mgmt
+   virtual-link Management
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd LB_B
+  connection-point mgmt
+   virtual-link Management
+  !
+  security-zone External
+  role          Secondary
+ !
+ service-access-point dummy
+  description    "Access point for connection of VNFDs to the outside network"
+  layer-protocol IPv4
+  virtual-link   Management
+ !
+ virtual-link CSR_Peer
+  description    "Connection between the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           31
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       true
+  need-vip       false
+  need-vrf       false
+  is-vnf-network true
+ !
+ virtual-link CSR_Peer_Internal
+  description    "Connection between the lower layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           31
+  pool-name      internal
+  need-vlan      true
+  need-contract  false
+  need-epg       true
+  need-vip       false
+  need-vrf       false
+  is-vnf-network true
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+  cidr           23
+  pool-name      management
+  need-vlan      false
+  need-contract  false
+  need-epg       false
+  need-vip       true
+  vip-sequence   510
+  need-vrf       false
+  reserve-per-ip true
+ !
+ dc-mode               Single
+ skip-day1-vnfr-config false
+!

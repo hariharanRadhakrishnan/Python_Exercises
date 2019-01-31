@@ -1,0 +1,27 @@
+nfvo:nfvo nsd AVITest
+ designer "Cisco AS Team - Test"
+ version  0.1
+ vnfd LB_A
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link LB_None
+  !
+  security-zone External
+  role          Primary
+ !
+ service-access-point ext
+  description    "Connection between the CSR and the APP Server"
+  layer-protocol IPv4
+  virtual-link   LB_None
+ !
+ virtual-link LB_None
+  description    "Connection between the CSR and the APP Server"
+  layer-protocol IPv4
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+ !
+!

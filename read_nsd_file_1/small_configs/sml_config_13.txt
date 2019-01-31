@@ -1,0 +1,491 @@
+nfvo:nfvo nsd ROLB_SSL_DUALDC
+ designer "Cisco AS Team"
+ version  0.1
+ vnfd CSRA2_A
+  connection-point downstream
+   virtual-link CSRA2_NGINX
+  !
+  connection-point downstream2
+   virtual-link CSRA2_LBC2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSRA2_Peer
+  !
+  connection-point upstream
+   virtual-link LB_CSRA2
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSRA2_B
+  connection-point downstream
+   virtual-link CSRA2_NGINX
+  !
+  connection-point downstream2
+   virtual-link CSRA2_LBC2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSRA2_Peer
+  !
+  connection-point upstream
+   virtual-link LB_CSRA2
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd CSRC2_A
+  connection-point downstream
+   virtual-link CSRC2_WAFC2
+  !
+  connection-point downstream2
+   virtual-link FW_C2_CSR_C2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSRC2_Peer
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSRC2_B
+  connection-point downstream
+   virtual-link CSRC2_WAFC2
+  !
+  connection-point downstream2
+   virtual-link FW_C2_CSR_C2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSRC2_Peer
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd CSR_A
+  connection-point downstream
+   virtual-link CSR_WAF
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  connection-point peerdc
+   virtual-link Peer_A_DC
+  !
+  connection-point upstream
+   virtual-link FW_INTERNET_CSR
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_B
+  connection-point downstream
+   virtual-link CSR_WAF
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_Peer
+  !
+  connection-point peerdc
+   virtual-link Peer_B_DC
+  !
+  connection-point upstream
+   virtual-link FW_INTERNET_CSR
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd CSR_IA
+  connection-point downstream
+   virtual-link CSR_INTERNAL_FW
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_INTERNAL_Peer
+  !
+  connection-point peerdc
+   virtual-link Peer_A_Internal_DC
+  !
+  connection-point shared
+   virtual-link SHARED
+  !
+  connection-point upstream
+   virtual-link APP_CSR
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd CSR_IB
+  connection-point downstream
+   virtual-link CSR_INTERNAL_FW
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link CSR_INTERNAL_Peer
+  !
+  connection-point peerdc
+   virtual-link Peer_B_Internal_DC
+  !
+  connection-point shared
+   virtual-link SHARED
+  !
+  connection-point upstream
+   virtual-link APP_CSR
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd LBC2_A
+  connection-point downstream
+   virtual-link CSRA2_LBC2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link WAFC2_LB_A
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd LBC2_B
+  connection-point downstream
+   virtual-link CSRA2_LBC2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link WAFC2_LB_B
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd LB_A
+  connection-point downstream
+   virtual-link LB_CSRA2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link WAF_LB_A
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd LB_B
+  connection-point downstream
+   virtual-link LB_CSRA2
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link WAF_LB_B
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd VFW_A
+  connection-point downstream
+   virtual-link VFW_APP
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link VFW_Peer
+  !
+  connection-point shared
+   virtual-link SHARED
+  !
+  connection-point upstream
+   virtual-link NGINX_VFW
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd VFW_B
+  connection-point downstream
+   virtual-link VFW_APP
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link VFW_Peer
+  !
+  connection-point shared
+   virtual-link SHARED
+  !
+  connection-point upstream
+   virtual-link NGINX_VFW
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd WAFC2_A
+  connection-point downstream
+   virtual-link WAFC2_LB_A
+  !
+  connection-point hsm
+   virtual-link WAFC2_HSM
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link WAFC2_Peer
+  !
+  connection-point splunk
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link CSRC2_WAFC2
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd WAFC2_B
+  connection-point downstream
+   virtual-link WAFC2_LB_B
+  !
+  connection-point hsm
+   virtual-link WAFC2_HSM
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link WAFC2_Peer
+  !
+  connection-point splunk
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link CSRC2_WAFC2
+  !
+  security-zone External
+  role          Secondary
+ !
+ vnfd WAF_A
+  connection-point downstream
+   virtual-link WAF_LB_A
+  !
+  connection-point hsm
+   virtual-link WAF_HSM
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link WAF_Peer
+  !
+  connection-point splunk
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link CSR_WAF
+  !
+  security-zone External
+  role          Primary
+ !
+ vnfd WAF_B
+  connection-point downstream
+   virtual-link WAF_LB_B
+  !
+  connection-point hsm
+   virtual-link WAF_HSM
+  !
+  connection-point mgmt
+   virtual-link Management
+  !
+  connection-point peer
+   virtual-link WAF_Peer
+  !
+  connection-point splunk
+   virtual-link Management
+  !
+  connection-point upstream
+   virtual-link CSR_WAF
+  !
+  security-zone External
+  role          Secondary
+ !
+ service-access-point ext
+  description    "Connection between the CSR and the APP Server"
+  layer-protocol IPv4
+  virtual-link   APP_CSR
+ !
+ virtual-link APP_CSR
+  description    "Connection between the CSR and the APP Server"
+  layer-protocol IPv4
+ !
+ virtual-link ASR_A_SW_A
+  description    "Connection between ASR A and SW B - South"
+  layer-protocol IPv4
+ !
+ virtual-link ASR_A_SW_B
+  description    "Connection between ASR A and SW B - Crossing"
+  layer-protocol IPv4
+ !
+ virtual-link CSRA2_LBC2
+  description    "Connection between the CSR A2 with the AVI LB C2"
+  layer-protocol IPv4
+ !
+ virtual-link CSRA2_NGINX
+  description    "Connection between the CSR A2 with the Linux VM for NGINX"
+  layer-protocol IPv4
+ !
+ virtual-link CSRA2_Peer
+  description    "Connection between CSR A2 A and CSR A2 B"
+  layer-protocol IPv4
+ !
+ virtual-link CSRC2_Peer
+  description    "Connection between CSR C2 A and CSR C2 B"
+  layer-protocol IPv4
+ !
+ virtual-link CSRC2_WAFC2
+  description    "Connection between the CSR C2 with the AVI LB"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_INTERNAL_FW
+  description    "Connection between the external FW context to the Internal CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_INTERNAL_Peer
+  description    "Connection between CSR A and CSR B"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_Peer
+  description    "Connection between the upper layer CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_Peer_Internal
+  description    "Connection between the lower layer CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link CSR_WAF
+  description    "Connection between the upper layer CSR with WAF"
+  layer-protocol IPv4
+ !
+ virtual-link FW_C2_CSR_C2
+  description    "Connection between the external FW context to the Internal CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link FW_C2_SW_INTERNAL
+  description    "Connection between the Internal FW C2 and internal SW"
+  layer-protocol IPv4
+ !
+ virtual-link FW_INTERNAL_MANAGEMENT
+  description    "Management network for down layer ASA firewall"
+  layer-protocol IPv4
+ !
+ virtual-link FW_INTERNAL_SW_INTERNAL
+  description    "Connection between the Internal FW and internal SW"
+  layer-protocol IPv4
+ !
+ virtual-link FW_INTERNET_CSR
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link FW_Management
+  description    "Management network for upper layer ASA firewall management"
+  layer-protocol IPv4
+ !
+ virtual-link LB_CSRA2
+  description    "Connection between the AVI LB and A2 CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link Management
+  description    "Connection between the external FW context to the upper layer CSR vitual devices"
+  layer-protocol IPv4
+ !
+ virtual-link NGINX_VFW
+  description    "Connection between the NGINX with Virtual Firewall VM"
+  layer-protocol IPv4
+ !
+ virtual-link Peer_A_DC
+  description    "Connection between the CSR A to PeerDC CSR side A"
+  layer-protocol IPv4
+ !
+ virtual-link Peer_A_Internal_DC
+  description    "Connection between the lower layer CSR A to PeerDC CSR side A"
+  layer-protocol IPv4
+ !
+ virtual-link Peer_B_DC
+  description    "Connection between the upper layer CSR B to PeerDC CSR side B"
+  layer-protocol IPv4
+ !
+ virtual-link Peer_B_Internal_DC
+  description    "Connection between the lower layer CSR B to PeerDC CSR side B"
+  layer-protocol IPv4
+ !
+ virtual-link SHARED
+  description    "Connection to A5 shared zone"
+  layer-protocol IPv4
+ !
+ virtual-link SW_FW
+  description    "Connection between the external switch with the upper FW context"
+  layer-protocol IPv4
+ !
+ virtual-link VFW_APP
+  description    "Connection between the vFW and the APP Server"
+  layer-protocol IPv4
+ !
+ virtual-link VFW_Peer
+  description    "Connection between vFW A and vFW B"
+  layer-protocol IPv4
+ !
+ virtual-link WAFC2_HSM
+  description    "Connection between WAF and HSM"
+  layer-protocol IPv4
+ !
+ virtual-link WAFC2_LB_A
+  description    "Connection between WAF and AVI Load Balance for Side A"
+  layer-protocol IPv4
+ !
+ virtual-link WAFC2_LB_B
+  description    "Connection between WAF and AVI Load Balance for Side B"
+  layer-protocol IPv4
+ !
+ virtual-link WAFC2_Peer
+  description    "Connection between WAF A and WAF B"
+  layer-protocol IPv4
+ !
+ virtual-link WAF_HSM
+  description    "Connection between WAF and AVI Load Balance"
+  layer-protocol IPv4
+ !
+ virtual-link WAF_LB_A
+  description    "Connection between WAF and AVI Load Balance for Side A"
+  layer-protocol IPv4
+ !
+ virtual-link WAF_LB_B
+  description    "Connection between WAF and AVI Load Balance for Side B"
+  layer-protocol IPv4
+ !
+ virtual-link WAF_Peer
+  description    "Connection between WAF A and WAF B"
+  layer-protocol IPv4
+ !
+!
